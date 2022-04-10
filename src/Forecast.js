@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import './Forecast.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { useEffect, useState } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { Button, Toast, ToastContainer } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
 const APIKey = 'apikey=8R7ZXIbbndnXTB4S8gMxj8BNsGs3o34v'
 const basic_url = 'http://dataservice.accuweather.com';
@@ -11,109 +12,473 @@ const weather_url = `${basic_url}/currentconditions/v1`;
 const forecast_url = `${basic_url}/forecasts/v1/daily/5day`
 function Forecast() {
 
-
+    const defaultLocation = { ID: "TA", Key: "215854", LocalizedName: "Tel Aviv" };
     const [errorMsg, setErrorMsg] = useState('');
-    // const [showToast, setShowError] = useState(true);
-    // const toggleShowA = () => setShowError(!showToast);
-
-    // const [selectedLocation, setSelectedLocation] = useState([{ LocalizedName: 'Tel Aviv' }]);
-    const [selectedLocation, setSelectedLocation] = useState([]);
-    // const [selectedLocation, setSelectedLocation] = useState({ LocalizedName: 'Tel Aviv' });
-    const [forecastData, setForecastData] = useState([{ day: 'Sunday', xxx: 38 }, { day: 'Monday', xxx: 40 }, { day: 'Sunday', xxx: 38 }, { day: 'Monday', xxx: 40 }, { day: 'Sunday', xxx: 38 }]);
+    const [selectedLocation, setSelectedLocation] = useState([defaultLocation]);
+    const [forecastData, setForecastData] = useState([]);
     const [locationsArr, setLocationsArr] = useState([]);
     const [currentWeather, setCurrentWeather] = useState({});
-    // let locationsArr = [{ LocalizedName: 'aaa' }, { LocalizedName: 'bbb' }, { LocalizedName: 'abc' }, { LocalizedName: 'ccc' }];
-    // let locationsArr = ['aaa', 'bbb', 'abc', 'ccc'];
-    // let forecastData = [{ day: 'Sunday', xxx: 38 }, { day: 'Monday', xxx: 40 }];
+    const [favoritesBtnTxt, setFavBtnText] = useState('Add to');
+    const [actionType, setActionType] = useState('ADD_FAVORITE');
+    const favoritesData = useSelector((state) => state)
 
-    let forecastItems = forecastData.map((location, index) => {
-        return <div className="forecast-details" key={index}>
-            <div className="forecast-day">{location.day}</div>
-            <div className="forecast-weather">{location.xxx}</div>
-        </div>
-    })
+
+
     function locationChange(selected) {
-        // debugger;
-        // let url = `${autocomplete_url}&q=${selected}&language=en-us`;//
+        debugger;
+        let url = `${autocomplete_url}&q=${selected}&language=en-us`;//
         // fetch(url).then((response) => response.json())
         //     .then(function (data) {
-        //         // debugger;
+        //         debugger;
+        //         console.log(url);
+        //         console.log(data);
         //         let locations = data.map(item => { return { ...item.AdministrativeArea, Key: item.Key } });
         //         setLocationsArr(locations);
         //     })
-        //     .catch((error) => console.log(error));
-
+        //     .catch(showError);
+        let data = [
+            {
+                "Version": 1,
+                "Key": "215854",
+                "Type": "City",
+                "Rank": 31,
+                "LocalizedName": "Tel Aviv",
+                "Country": {
+                    "ID": "IL",
+                    "LocalizedName": "Israel"
+                },
+                "AdministrativeArea": {
+                    "ID": "TA",
+                    "LocalizedName": "Tel Aviv"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "3431644",
+                "Type": "City",
+                "Rank": 45,
+                "LocalizedName": "Telanaipura",
+                "Country": {
+                    "ID": "ID",
+                    "LocalizedName": "Indonesia"
+                },
+                "AdministrativeArea": {
+                    "ID": "JA",
+                    "LocalizedName": "Jambi"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "300558",
+                "Type": "City",
+                "Rank": 45,
+                "LocalizedName": "Telok Blangah New Town",
+                "Country": {
+                    "ID": "SG",
+                    "LocalizedName": "Singapore"
+                },
+                "AdministrativeArea": {
+                    "ID": "05",
+                    "LocalizedName": "South West"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "325876",
+                "Type": "City",
+                "Rank": 51,
+                "LocalizedName": "Telford",
+                "Country": {
+                    "ID": "GB",
+                    "LocalizedName": "United Kingdom"
+                },
+                "AdministrativeArea": {
+                    "ID": "TFW",
+                    "LocalizedName": "Telford and Wrekin"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "169072",
+                "Type": "City",
+                "Rank": 51,
+                "LocalizedName": "Telavi",
+                "Country": {
+                    "ID": "GE",
+                    "LocalizedName": "Georgia"
+                },
+                "AdministrativeArea": {
+                    "ID": "KA",
+                    "LocalizedName": "Kakheti"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "230611",
+                "Type": "City",
+                "Rank": 51,
+                "LocalizedName": "Telsiai",
+                "Country": {
+                    "ID": "LT",
+                    "LocalizedName": "Lithuania"
+                },
+                "AdministrativeArea": {
+                    "ID": "TE",
+                    "LocalizedName": "Telšiai"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "2723742",
+                "Type": "City",
+                "Rank": 55,
+                "LocalizedName": "Telégrafo",
+                "Country": {
+                    "ID": "BR",
+                    "LocalizedName": "Brazil"
+                },
+                "AdministrativeArea": {
+                    "ID": "PA",
+                    "LocalizedName": "Pará"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "186933",
+                "Type": "City",
+                "Rank": 55,
+                "LocalizedName": "Tela",
+                "Country": {
+                    "ID": "HN",
+                    "LocalizedName": "Honduras"
+                },
+                "AdministrativeArea": {
+                    "ID": "AT",
+                    "LocalizedName": "Atlántida"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "3453754",
+                "Type": "City",
+                "Rank": 55,
+                "LocalizedName": "Telaga Asih",
+                "Country": {
+                    "ID": "ID",
+                    "LocalizedName": "Indonesia"
+                },
+                "AdministrativeArea": {
+                    "ID": "JB",
+                    "LocalizedName": "West Java"
+                }
+            },
+            {
+                "Version": 1,
+                "Key": "3453755",
+                "Type": "City",
+                "Rank": 55,
+                "LocalizedName": "Telagamurni",
+                "Country": {
+                    "ID": "ID",
+                    "LocalizedName": "Indonesia"
+                },
+                "AdministrativeArea": {
+                    "ID": "JB",
+                    "LocalizedName": "West Java"
+                }
+            }
+        ];
+        let locations = data.map(item => { return { ...item.AdministrativeArea, Key: item.Key } });
+        setLocationsArr(locations);
     }
+
     function showError(error) {
-        // debugger;
         console.log(error);
         setErrorMsg('Server Error, please contact your admin');
     }
+    // useEffect(() => {
+    //     if (selectedLocation.length == 0) {
+    //         setSelectedLocation([]);
+    //     }
+    // });
     useEffect(() => {
-        /*
-        [
-  {
-    "LocalObservationDateTime": "2022-04-10T00:23:00+03:00",
-    "EpochTime": 1649539380,
-    "WeatherText": "Clear",
-    "WeatherIcon": 33,
-    "HasPrecipitation": false,
-    "PrecipitationType": null,
-    "IsDayTime": false,
-    "Temperature": {
-      "Metric": {
-        "Value": 17.2,
-        "Unit": "C",
-        "UnitType": 17
-      },
-      "Imperial": {
-        "Value": 63,
-        "Unit": "F",
-        "UnitType": 18
-      }
-    },
-    "MobileLink": "http://www.accuweather.com/en/gr/athens/182536/current-weather/182536?lang=en-us",
-    "Link": "http://www.accuweather.com/en/gr/athens/182536/current-weather/182536?lang=en-us"
-  }
-]*/
         // debugger;
         let key = selectedLocation.length ? selectedLocation[0].Key : 215854; /* Tel Aviv Key */
-        let url = `${weather_url}/${key}?${APIKey}`;//&language=en-us&details=false
+        // let url = `${weather_url}/${key}?${APIKey}`;//&language=en-us&details=false
         // fetch(url).then((response) => response.json())
         //     .then(function (data) {
-        //         // debugger;
+        //         debugger;
+        //         console.log(url);
+        //         console.log(data);
         //         setCurrentWeather(data[0]);
         //     })
         //     .catch(showError);
-        // url += '&metric=true';
-        // fetch(url).then((response) => response.json())
+        setCurrentWeather([
+            {
+                "LocalObservationDateTime": "2022-04-11T00:58:00+03:00",
+                "EpochTime": 1649627880,
+                "WeatherText": "Partly cloudy",
+                "WeatherIcon": 35,
+                "HasPrecipitation": false,
+                "PrecipitationType": null,
+                "IsDayTime": false,
+                "Temperature": {
+                    "Metric": {
+                        "Value": 17.8,
+                        "Unit": "C",
+                        "UnitType": 17
+                    },
+                    "Imperial": {
+                        "Value": 64,
+                        "Unit": "F",
+                        "UnitType": 18
+                    }
+                },
+                "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/current-weather/215854?lang=en-us",
+                "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/current-weather/215854?lang=en-us"
+            }
+        ][0]);
+        // let url_5d = `${forecast_url}/${key}?${APIKey}&metric=true`;
+        // fetch(url_5d).then((response) => response.json())
         //     .then(function (data) {
-        //         // debugger;
-        //         setForecastData(data.DailyForecasts);
+        //         debugger;
+        //         console.log(url_5d);
+        //         console.log(data);
+        //         let forecastData = data.DailyForecasts.map((item) => {
+        //             return {
+        //                 temp: `${item.Temperature.Minimum.Value} - ${item.Temperature.Maximum.Value}`,
+        //                 day: new Date(item.Date).toLocaleDateString('en-us', { weekday: 'long' })
+        //             }
+        //         });
+        //         setForecastData(forecastData);
         //     })
         //     .catch(showError);
+        let data = {
+            "Headline": {
+                "EffectiveDate": "2022-04-12T08:00:00+03:00",
+                "EffectiveEpochDate": 1649739600,
+                "Severity": 7,
+                "Text": "Cool Tuesday",
+                "Category": "cold",
+                "EndDate": "2022-04-12T20:00:00+03:00",
+                "EndEpochDate": 1649782800,
+                "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?unit=c&lang=en-us",
+                "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?unit=c&lang=en-us"
+            },
+            "DailyForecasts": [
+                {
+                    "Date": "2022-04-10T07:00:00+03:00",
+                    "EpochDate": 1649563200,
+                    "Temperature": {
+                        "Minimum": {
+                            "Value": 13.2,
+                            "Unit": "C",
+                            "UnitType": 17
+                        },
+                        "Maximum": {
+                            "Value": 21.5,
+                            "Unit": "C",
+                            "UnitType": 17
+                        }
+                    },
+                    "Day": {
+                        "Icon": 1,
+                        "IconPhrase": "Sunny",
+                        "HasPrecipitation": false
+                    },
+                    "Night": {
+                        "Icon": 38,
+                        "IconPhrase": "Mostly cloudy",
+                        "HasPrecipitation": false
+                    },
+                    "Sources": [
+                        "AccuWeather"
+                    ],
+                    "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?unit=c&lang=en-us",
+                    "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?unit=c&lang=en-us"
+                },
+                {
+                    "Date": "2022-04-11T07:00:00+03:00",
+                    "EpochDate": 1649649600,
+                    "Temperature": {
+                        "Minimum": {
+                            "Value": 17.6,
+                            "Unit": "C",
+                            "UnitType": 17
+                        },
+                        "Maximum": {
+                            "Value": 20.8,
+                            "Unit": "C",
+                            "UnitType": 17
+                        }
+                    },
+                    "Day": {
+                        "Icon": 2,
+                        "IconPhrase": "Mostly sunny",
+                        "HasPrecipitation": false
+                    },
+                    "Night": {
+                        "Icon": 38,
+                        "IconPhrase": "Mostly cloudy",
+                        "HasPrecipitation": false
+                    },
+                    "Sources": [
+                        "AccuWeather"
+                    ],
+                    "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=1&unit=c&lang=en-us",
+                    "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=1&unit=c&lang=en-us"
+                },
+                {
+                    "Date": "2022-04-12T07:00:00+03:00",
+                    "EpochDate": 1649736000,
+                    "Temperature": {
+                        "Minimum": {
+                            "Value": 14.2,
+                            "Unit": "C",
+                            "UnitType": 17
+                        },
+                        "Maximum": {
+                            "Value": 18.3,
+                            "Unit": "C",
+                            "UnitType": 17
+                        }
+                    },
+                    "Day": {
+                        "Icon": 6,
+                        "IconPhrase": "Mostly cloudy",
+                        "HasPrecipitation": false
+                    },
+                    "Night": {
+                        "Icon": 35,
+                        "IconPhrase": "Partly cloudy",
+                        "HasPrecipitation": false
+                    },
+                    "Sources": [
+                        "AccuWeather"
+                    ],
+                    "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=2&unit=c&lang=en-us",
+                    "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=2&unit=c&lang=en-us"
+                },
+                {
+                    "Date": "2022-04-13T07:00:00+03:00",
+                    "EpochDate": 1649822400,
+                    "Temperature": {
+                        "Minimum": {
+                            "Value": 14.3,
+                            "Unit": "C",
+                            "UnitType": 17
+                        },
+                        "Maximum": {
+                            "Value": 18.5,
+                            "Unit": "C",
+                            "UnitType": 17
+                        }
+                    },
+                    "Day": {
+                        "Icon": 1,
+                        "IconPhrase": "Sunny",
+                        "HasPrecipitation": false
+                    },
+                    "Night": {
+                        "Icon": 34,
+                        "IconPhrase": "Mostly clear",
+                        "HasPrecipitation": false
+                    },
+                    "Sources": [
+                        "AccuWeather"
+                    ],
+                    "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=3&unit=c&lang=en-us",
+                    "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=3&unit=c&lang=en-us"
+                },
+                {
+                    "Date": "2022-04-14T07:00:00+03:00",
+                    "EpochDate": 1649908800,
+                    "Temperature": {
+                        "Minimum": {
+                            "Value": 13.6,
+                            "Unit": "C",
+                            "UnitType": 17
+                        },
+                        "Maximum": {
+                            "Value": 20.6,
+                            "Unit": "C",
+                            "UnitType": 17
+                        }
+                    },
+                    "Day": {
+                        "Icon": 1,
+                        "IconPhrase": "Sunny",
+                        "HasPrecipitation": false
+                    },
+                    "Night": {
+                        "Icon": 33,
+                        "IconPhrase": "Clear",
+                        "HasPrecipitation": false
+                    },
+                    "Sources": [
+                        "AccuWeather"
+                    ],
+                    "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=4&unit=c&lang=en-us",
+                    "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=4&unit=c&lang=en-us"
+                }
+            ]
+        };
+        let forecastData = data.DailyForecasts.map((item) => {
+            return {
+                temp: `${item.Temperature.Minimum.Value} - ${item.Temperature.Maximum.Value}`,
+                day: new Date(item.Date).toLocaleDateString('en-us', { weekday: 'long' })
+            }
+        });
+        setForecastData(forecastData);
+
+        if (favoritesData?.find((item) => item.locationKey === selectedLocation[0])) {
+            setFavBtnText('Remove From');
+            setActionType('REMOVE_FAVORITE');
+        }
+        else {
+            setFavBtnText('Add To');
+            setActionType('ADD_FAVORITE');
+        }
     }, [selectedLocation]);
-    const mngFavoritesBtnTxt = false ? 'Add to' : 'Remove from';
-    
+
+    const dispatch = useDispatch();
+
+    let forecastItems = forecastData.map((item, index) => {
+        return <div className="forecast-details" key={index}>
+            <div className="forecast-title">{item.day}</div>
+            <div className="forecast-weather">{item.temp}</div>
+        </div>
+    })
     return (
         <div>
             <div style={{ width: 'fit-content' }}>
                 <Typeahead id='selectLocation'
-                    onChange={setSelectedLocation}
+                    onChange={(selected)=>{
+                        debugger;
+                        setSelectedLocation(selected)}}
                     onInputChange={locationChange}
                     options={locationsArr}
                     selected={selectedLocation}
                     labelKey="LocalizedName"
-                    placeholder="Choose a state...">
+                    placeholder="Choose a state..."
+                    onKeyDown={(e) => { if (!/[a-z]/i.test(e.key)) { e.preventDefault(); } }}>
                 </Typeahead>
             </div>
 
             <div className='selected-location-wrapper'>
-                <div className='forecast-details'>{selectedLocation.length ? selectedLocation[0].LocalizedName : 'nothing selected'}</div>
-                {currentWeather.Temperature ? <div><div>{currentWeather.WeatherText}</div>
-                    <div>{currentWeather.Temperature.Metric.Value}</div></div> : ''}
-                <Button variant="outline-primary" className="manage-favorites-btn">
-                    <i>+</i>{mngFavoritesBtnTxt} favorites
+                <div className='forecast-details'>
+                    {/* <span className='forecast-title'>{selectedLocation.length ? selectedLocation[0].LocalizedName : 'Tel Aviv'}</span> */}
+                    <span className='forecast-title'>{selectedLocation[0].LocalizedName}</span>
+                    {currentWeather.Temperature ? <div><div>{currentWeather.WeatherText}</div>
+                        <div>{currentWeather.Temperature.Metric.Value}</div></div> : ''}
+                    {/* <div>
+                        <div>{currentWeather.WeatherText}</div>
+                        <div>{currentWeather.Temperature.Metric.Value}</div>
+                    </div> */}
+                </div>
+                <Button variant="outline-primary" className="manage-favorites-btn"
+                    onClick={() => dispatch({ type: actionType, location: selectedLocation[0] })}>
+                    <i>+</i>{favoritesBtnTxt} favorites
                 </Button>
             </div>
 
