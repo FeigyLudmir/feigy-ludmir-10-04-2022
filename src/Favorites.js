@@ -9,13 +9,19 @@ function Favorites(props) {
     const [favoritesWeather, setFavoritesWeather] = useState({});
 
     useEffect(() => {
+        let index = 1;
+        let favoritesWeatherHelper = {};
         favoritesData.forEach(location => {
-            let url = `http://dataservice.accuweather.com/currentconditions/v1/${location.Key}?${APIKey}`;//&language=en-us&details=false
+            let url = `http://dataservice.accuweather.com/currentconditions/v1/${location.Key}?apikey=8R7ZXIbbndnXTB4S8gMxj8BNsGs3o34v`;
             fetch(url).then((response) => response.json())
                 .then(function (data) {
-                    setFavoritesWeather({...favoritesWeather, [location.Key]: data[0]});
+                    favoritesWeatherHelper[location.Key] = data[0];
+                    index++;
+                    if (index == favoritesData.length) {
+                        setFavoritesWeather(favoritesWeatherHelper);
+                    }
                 })
-                .catch(showError);
+                .catch();
         });
     }, []);
 
@@ -27,8 +33,8 @@ function Favorites(props) {
     let favoritesItems = favoritesData.map((location, index) => {
         return <Button variant="outline-primary" className="location-details" key={index}
             onClick={() => onSelectFavorite(location)}>
-            <div className="location-name">{location.LocalizedName}</div>
-            <div className="location-weather">{favoritesWeather[location.Key] || 'loading...'}</div>
+            <div>{location.LocalizedName}</div>
+            <div>{favoritesWeather[location.Key]?.WeatherText || 'loading...'}</div>
         </Button>
     })
     return (

@@ -6,7 +6,7 @@ import { Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 const APIKey = 'apikey=8R7ZXIbbndnXTB4S8gMxj8BNsGs3o34v'
-const basic_url = 'http://dataservice.accuweather.commm';
+const basic_url = 'http://dataservice.accuweather.com';
 const autocomplete_url = `${basic_url}/locations/v1/cities/autocomplete?${APIKey}`
 const weather_url = `${basic_url}/currentconditions/v1`;
 const forecast_url = `${basic_url}/forecasts/v1/daily/5day`
