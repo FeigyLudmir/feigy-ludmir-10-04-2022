@@ -10,13 +10,12 @@ function getFavoritesData() {
 const reducer = (state = getFavoritesData(), action) => {
     console.log('reducer');
     switch (action.type) {
-        // case 'SET_FAVORITES':
-        //     return getFavoritesData();
         case 'ADD_FAVORITE':
             return saveFavoritesData([...state, action.location]);
         case 'REMOVE_FAVORITE':
-            return saveFavoritesData(state.filter(location => location.ID !== action.locationId));
-        case 'GET_FAVORITES':
+            return saveFavoritesData(state.filter(location => location.Key !== action.location.Key));
+        case 'SET_SELECTED_FAVORITE':
+            return state.map(item => { return { ...item, selected: item.Key === action.Key } });
         default:
             return state;
     }

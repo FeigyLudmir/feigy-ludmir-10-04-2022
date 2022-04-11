@@ -5,11 +5,11 @@ import './Favorites.css';
 function Favorites() {
     const favoritesData = useSelector((state) => state);
     let favoritesItems = favoritesData.map((location, index) => {
-        return <div className="location-details" key={index}>
+        return <button className="location-details" key={index}>
             <div className="location-name">{location.LocalizedName}</div>
             <div className="location-weather">{location.temp || 'loading...'}</div>
             <div className="weather-description">description</div>
-        </div>
+        </button>
     })
     return (
         <div className="favorites-wrapper">
