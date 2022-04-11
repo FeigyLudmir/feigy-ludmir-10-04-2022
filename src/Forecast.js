@@ -6,7 +6,7 @@ import { Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 const APIKey = 'apikey=8R7ZXIbbndnXTB4S8gMxj8BNsGs3o34v'
-const basic_url = 'http://dataservice.accuweather.com';
+const basic_url = 'http://dataservice.accuweather.commm';
 const autocomplete_url = `${basic_url}/locations/v1/cities/autocomplete?${APIKey}`
 const weather_url = `${basic_url}/currentconditions/v1`;
 const forecast_url = `${basic_url}/forecasts/v1/daily/5day`
@@ -17,10 +17,10 @@ function Forecast() {
     const [currentWeather, setCurrentWeather] = useState({});
     const [favoritesBtnTxt, setFavBtnText] = useState('Add to');
     const [actionType, setActionType] = useState('ADD_FAVORITE');
-    const defaultLocation = { ID: "TA", Key: "215854", LocalizedName: "Tel Aviv" };
-    const favoritesData = useSelector((state) => state);
-    const [selectedLocations, setSelectedLocations] = useState([favoritesData.find(item => item.selected) || defaultLocation]);
-    const [selectedLocation, setSelectedLocation] = useState(selectedLocations[0]);
+    const defaultLocation = useSelector((state) => state.selectedFavorite);
+    const favoritesData = useSelector((state) => state.favorites);
+    const [selectedLocations, setSelectedLocations] = useState([defaultLocation]);
+    const [selectedLocation, setSelectedLocation] = useState(defaultLocation);
 
     function locationChange(selected) {
         let url = `${autocomplete_url}&q=${selected}&language=en-us`;//
@@ -426,11 +426,18 @@ function Forecast() {
         }
     }
     useEffect(() => {
-        setFavBtn(); 
+        setFavBtn();
     }, [favoritesData, selectedLocation]);
-
     useEffect(() => {
-        setFavBtn(); 
+        setSelectedLocations([defaultLocation]);
+        setSelectedLocation(defaultLocation);
+    }, [defaultLocation]);
+    // useEffect(() => {
+    //     if (favoritesData)
+    //         setSelectedLocation(favoritesData.find(item => item.selected));
+    // }, [favoritesData]);
+    useEffect(() => {
+        setFavBtn();
     }, []);
 
     const dispatch = useDispatch();
